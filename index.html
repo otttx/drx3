@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>لوحة تحكم الوكلاء — الإدارة القانونية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--g:#0f5c4a;--g2:#e6efec;--bd:#dbe5e1;--tx:#1f2a27;--mu:#6b7c77;--am:#b45309;--rd:#b42318;--bg:#f4f7f6}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Tajawal,"Segoe UI",Tahoma,sans-serif;background:var(--bg);color:var(--tx);font-size:14.5px}
+  header{background:var(--g);color:#fff;padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  header h1{font-size:18px;margin:0;font-weight:700}
+  header .sp{flex:1}
+  header button{background:#ffffff22;color:#fff}
+  header .pill{background:#ffffff22;color:#fff}
+  main{max-width:1150px;margin:0 auto;padding:18px}
+  .card{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:14px}
+  .center{max-width:420px;margin:60px auto}
+  h2{font-size:17px;margin:0 0 12px;color:var(--g)}
+  label{display:block;font-size:13px;color:var(--mu);margin:10px 0 4px}
+  input,select,textarea{font-family:inherit;font-size:14px;padding:8px;border:1px solid #c9d6d2;border-radius:7px;width:100%;background:#fff}
+  textarea{min-height:90px;line-height:1.7}
+  button{font-family:inherit;background:var(--g);color:#fff;border:0;border-radius:7px;padding:8px 14px;font-size:14px;cursor:pointer}
+  button.sec{background:var(--g2);color:var(--g)}
+  button.am{background:var(--am)}
+  button.rd{background:var(--rd)}
+  button.sm{padding:5px 10px;font-size:13px}
+  button:disabled{opacity:.5;cursor:default}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .muted{color:var(--mu);font-size:12.5px}
+  .err{color:var(--rd)}
+  .tabs{display:flex;gap:4px;border-bottom:2px solid var(--bd);margin-bottom:14px;flex-wrap:wrap}
+  .tabs button{background:none;color:var(--mu);border-radius:8px 8px 0 0;padding:10px 16px;font-weight:600}
+  .tabs button.on{background:#fff;color:var(--g);border:1px solid var(--bd);border-bottom:2px solid #fff;margin-bottom:-2px}
+  .status{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;background:var(--g2);font-size:13px}
+  .dot{width:9px;height:9px;border-radius:50%;background:#9ca3af}
+  .nafath{background:#fffbeb;border:2px solid #f59e0b;border-radius:12px;padding:14px;text-align:center;margin-top:12px}
+  .nafath b{font-size:44px;color:var(--am);display:block}
+  .notice{border:1px solid var(--bd);border-radius:10px;padding:12px;margin-bottom:10px}
+  .tmpl{background:#f8fbfa;border:1px dashed #b8cbc5;border-radius:8px;padding:10px;line-height:1.9;margin:6px 0;position:relative}
+  .tmpl .cp{position:absolute;left:8px;top:8px}
+  .rep{font-size:13px;margin-top:4px}
+  .rep b{color:var(--g)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+  .stat{background:#fff;border:1px solid var(--bd);border-radius:10px;padding:12px}
+  .stat .n{font-size:26px;font-weight:700;color:var(--g)}
+  .bar{height:10px;background:var(--g2);border-radius:6px;overflow:hidden;margin-top:4px}
+  .bar i{display:block;height:100%;background:var(--g)}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th,td{border-bottom:1px solid var(--bd);padding:8px 6px;text-align:right;vertical-align:top}
+  th{background:#f1f6f4;color:var(--g);font-weight:600}
+  .tag{font-size:11.5px;padding:2px 7px;border-radius:10px;background:var(--g2);color:var(--g);white-space:nowrap}
+  .tag.auto{background:#e0e7ff;color:#3730a3}.tag.live{background:#fef3c7;color:#92400e}.tag.fu{background:#fce7f3;color:#9d174d}
+  .toast{position:fixed;bottom:18px;left:18px;background:#1f2a27;color:#fff;padding:10px 16px;border-radius:8px;z-index:99;max-width:420px}
+  .hidden{display:none!important}
+  .logline{font-size:13px;padding:5px 0;border-bottom:1px solid #eef3f1}
+  img.prev{max-height:70px;border:1px solid var(--bd);border-radius:6px;padding:4px;background:#fff}
+  @media print{body *{visibility:hidden}#printArea,#printArea *{visibility:visible}#printArea{position:absolute;inset:0}}
+</style>
+</head>
+<body>
+<header>
+  <h1>⚖️ لوحة تحكم الوكلاء — الإدارة القانونية</h1>
+  <span class="sp"></span>
+  <span id="hdrAgent" class="pill hidden"></span>
+  <button id="btnSwitch" class="sm hidden">تبديل الوكيل</button>
+  <button id="btnOut" class="sm hidden">خروج</button>
+</header>
+<main>
+  <!-- تسجيل الدخول -->
+  <section id="scLogin" class="card center hidden">
+    <h2>تسجيل الدخول</h2>
+    <label>البريد الإلكتروني</label><input id="lgEmail" type="email" autocomplete="username">
+    <label>كلمة المرور</label><input id="lgPass" type="password" autocomplete="current-password">
+    <div class="row" style="margin-top:14px"><button id="lgBtn">دخول</button></div>
+    <div id="lgErr" class="err" style="margin-top:8px"></div>
+  </section>
+
+  <!-- اختيار الوكيل -->
+  <section id="scAgent" class="card center hidden">
+    <h2>أدخل اسم الوكيل</h2>
+    <input id="agName" list="agList" placeholder="مثال: عزام" autocomplete="off">
+    <datalist id="agList"></datalist>
+    <div class="row" style="margin-top:14px"><button id="agBtn">دخول للوكيل</button></div>
+    <div id="agErr" class="err" style="margin-top:8px"></div>
+  </section>
+
+  <!-- وكيل عزام -->
+  <section id="scAzzam" class="hidden">
+    <div class="card">
+      <div class="status">
+        <span class="pill"><span class="dot" id="azDot"></span><span id="azOnline">—</span></span>
+        <span id="azState" style="font-weight:600">—</span>
+        <span class="muted" id="azSeen"></span>
+      </div>
+      <div id="azNafath" class="nafath hidden">اختر هذا الرقم في تطبيق نفاذ<b id="azNafNum"></b><span class="muted">سيكمل عزام الدخول تلقائياً بعد موافقتك</span></div>
+      <div class="row" style="margin-top:12px">
+        <button id="cmLogin" class="sec">تسجيل الدخول للمنصة</button>
+        <button id="cmScan">فحص التبليغات</button>
+        <button id="cmLive" class="am">العرض المباشر على الجهاز</button>
+        <button id="cmAuto">إحالة عشوائية آلية</button>
+      </div>
+      <div class="row" style="margin-top:10px" id="poolBox"></div>
+    </div>
+
+    <div class="tabs">
+      <button data-t="tNotices" class="on">التبليغات <span id="cntN"></span></button>
+      <button data-t="tRefs">الإحالات السابقة</button>
+      <button data-t="tLog">سجل التشغيل</button>
+      <button data-t="tSet">الإعدادات</button>
+    </div>
+
+    <div id="tNotices"></div>
+
+    <div id="tRefs" class="hidden">
+      <div class="grid" id="stats"></div>
+      <div class="card" style="margin-top:14px">
+        <div class="row">
+          <input id="fQ" placeholder="بحث برقم الدعوى أو اسم الطرف" style="max-width:260px">
+          <select id="fEmp" style="max-width:180px"><option value="">كل الموظفين</option></select>
+          <label style="margin:0">من</label><input id="fFrom" type="date" style="max-width:160px">
+          <label style="margin:0">إلى</label><input id="fTo" type="date" style="max-width:160px">
+          <span class="sp" style="flex:1"></span>
+          <button class="sec" id="prList">طباعة القائمة</button>
+        </div>
+        <div style="overflow:auto;margin-top:10px"><table id="refTable"></table></div>
+      </div>
+    </div>
+
+    <div id="tLog" class="hidden"><div class="card"><h2>سجل التشغيل</h2><div id="logList"></div></div></div>
+
+    <div id="tSet" class="hidden">
+      <div class="card">
+        <h2>الموظفون الممثلون</h2>
+        <div class="muted">يُحدَّث «الاسم في المنصة» تلقائياً عند كل فحص. الموظف غير المضاف في المنصة يظهر معطّلاً.</div>
+        <div style="overflow:auto"><table id="empTable"></table></div>
+        <div class="row" style="margin-top:10px"><button id="saveEmp">حفظ</button></div>
+      </div>
+      <div class="card">
+        <h2>نص التوجيه</h2>
+        <div class="muted">يُكتب في خانة «توجيهات» بالمنصة وفي خطاب التكليف.</div>
+        <textarea id="dirTxt"></textarea>
+        <div class="row" style="margin-top:10px"><button id="saveDir">حفظ</button></div>
+      </div>
+      <div class="card">
+        <h2>الشعار والتوقيع</h2>
+        <div class="muted">يُحفظان في قاعدة البيانات المحمية بحسابك، ولا يظهران في كود الصفحة.</div>
+        <div class="row" style="margin-top:8px"><label style="margin:0;min-width:70px">الشعار</label><input type="file" id="upLogo" accept="image/*" style="max-width:260px"><img id="pvLogo" class="prev hidden"></div>
+        <div class="row" style="margin-top:8px"><label style="margin:0;min-width:70px">التوقيع</label><input type="file" id="upSig" accept="image/*" style="max-width:260px"><img id="pvSig" class="prev hidden"></div>
+        <label><input type="checkbox" id="useSig" style="width:auto"> إدراج التوقيع تلقائياً في خطاب التكليف</label>
+      </div>
+    </div>
+  </section>
+  <div id="printArea" class="hidden"></div>
+</main>
+<div id="toast" class="toast hidden"></div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc, addDoc, getDocs, collection, onSnapshot, query, where, orderBy, limit, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyCu0Cq9fN0DEo7J0rU1dM77bA_gPLA2mF8',
+  authDomain: 'azam-61514.firebaseapp.com',
+  projectId: 'azam-61514',
+  storageBucket: 'azam-61514.firebasestorage.app',
+  messagingSenderId: '598518181920',
+  appId: '1:598518181920:web:a06d37c20e4490df8ccc45'
+};
+const OWNER_UID = '5O6FBIldnxOGZuIijSIovo5UPqI3';
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ===== تسجيل الوكلاء: أضف وكلاءك القادمين هنا =====
+const AGENTS = {
+  azzam: { name: 'عزام', aliases: ['عزام', 'azzam'], screen: 'scAzzam', open: openAzzam }
+};
+
+const CLASSES = { '13': 'التعويضات', '42': 'إلغاء قرار', '43': 'العقود والاتفاقيات', '4': 'قضايا وظيفية', '5': 'عقود استثمار', '6': 'عقود مشتريات', '8': 'غرامات وجزاءات', '9': 'التراخيص', '3': 'تخطيط عمراني', '2': 'نزع ملكية', '1': 'منح', '7': 'عقود استئجار الدولة للعقار', '10': 'رسوم الأراضي البيضاء', '11': 'دعم سكني', '12': 'قضايا الإسكان', '14': 'أتعاب المحاماة', '15': 'تيار كهربائي', '16': 'المجلس البلدي', '40': 'الدعاوى المرورية', '41': 'التنفيذ', '17': 'أخرى' };
+const DEFAULT_DIRECTIVE = 'آمل اتخاذ اللازم حيال الدعوى المشار إليها، وتمثيل البلدية والترافع عنها أمام كافة درجات التقاضي، وإعداد وتقديم ما يلزم من مذكرات جوابية ولوائح اعتراضية واستئنافية ضمن المدد النظامية، ومخاطبة الإدارات ذات العلاقة لاستيفاء المرئيات والمستندات المؤيدة لموقف البلدية، مع الحرص على قيد الدعوى ومتابعتها وتحديث إجراءاتها أولاً بأول عبر المنصة القانونية وبرنامج القضايا الخاص بالإدارة.';
+const MANAGER_NAME = 'د. عبدالله بن إبراهيم القويفلي';
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const norm = s => String(s || '').replace(/[ً-ْـ]/g, '').replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/\s+/g, ' ').trim();
+const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+function toast(t, ms = 3500) { const el = $('toast'); el.textContent = t; el.classList.remove('hidden'); clearTimeout(toast._t); toast._t = setTimeout(() => el.classList.add('hidden'), ms); }
+function show(id) { for (const s of ['scLogin', 'scAgent', 'scAzzam']) $(s).classList.toggle('hidden', s !== id); }
+const tsDate = v => v ? (v.toDate ? v.toDate() : new Date(v)) : null;
+const fmtDT = v => { const d = tsDate(v); return d ? d.toLocaleString('ar-SA-u-ca-gregory-nu-latn', { dateStyle: 'medium', timeStyle: 'short' }) : ''; };
+const hijriToday = () => { const p = Object.fromEntries(new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { day: '2-digit', month: '2-digit', year: 'numeric' }).formatToParts(new Date()).map(x => [x.type, x.value])); return `${p.day}-${p.month}-${String(p.year).replace(/\D/g, '')}`; };
+const gregToday = () => { const d = new Date(); return `${String(d.getDate()).padStart(2, '0')}-${String(d.getMonth() + 1).padStart(2, '0')}-${d.getFullYear()}`; };
+const gDisp = iso => { if (!iso) return ''; const [y, m, d] = String(iso).slice(0, 10).split('-'); return `${d}-${m}-${y}م`; };
+const WD = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+const wday = iso => iso ? WD[new Date(String(iso).slice(0, 10) + 'T12:00:00').getDay()] : '';
+const tDisp = t => { if (!t) return ''; let [h, m] = String(t).split(':').map(Number); return `${String(h % 12 || 12).padStart(2, '0')}:${String(m).padStart(2, '0')} ${h >= 12 ? 'مساءً' : 'صباحاً'}`; };
+
+// ===== المصادقة =====
+let unsubs = [];
+onAuthStateChanged(auth, async user => {
+  unsubs.forEach(u => u()); unsubs = [];
+  $('btnOut').classList.toggle('hidden', !user);
+  if (!user) { show('scLogin'); $('btnSwitch').classList.add('hidden'); $('hdrAgent').classList.add('hidden'); return; }
+  if (user.uid !== OWNER_UID) { $('lgErr').textContent = 'هذا الحساب غير مصرّح له.'; await signOut(auth); return; }
+  const last = store.get('lastAgent');
+  if (last && AGENTS[last]) enterAgent(last); else showAgentPicker();
+});
+$('lgBtn').onclick = async () => {
+  $('lgErr').textContent = '';
+  try { await signInWithEmailAndPassword(auth, $('lgEmail').value.trim(), $('lgPass').value); }
+  catch (e) { $('lgErr').textContent = 'تعذر الدخول: تحقق من البريد وكلمة المرور.'; }
+};
+$('lgPass').onkeydown = e => { if (e.key === 'Enter') $('lgBtn').click(); };
+$('btnOut').onclick = () => signOut(auth);
+$('btnSwitch').onclick = () => { store.set('lastAgent', ''); unsubs.forEach(u => u()); unsubs = []; showAgentPicker(); };
+
+async function showAgentPicker() {
+  show('scAgent'); $('btnSwitch').classList.add('hidden'); $('hdrAgent').classList.add('hidden');
+  $('agName').value = ''; $('agName').focus();
+  try { const s = await getDocs(collection(db, 'agents')); $('agList').innerHTML = s.docs.map(d => `<option value="${esc(d.data().name || d.id)}">`).join(''); } catch (e) {}
+}
+$('agBtn').onclick = () => {
+  const n = norm($('agName').value);
+  const key = Object.keys(AGENTS).find(k => AGENTS[k].aliases.some(a => norm(a) === n));
+  if (!key) { $('agErr').textContent = 'لا يوجد وكيل بهذا الاسم.'; return; }
+  $('agErr').textContent = ''; enterAgent(key);
+};
+$('agName').onkeydown = e => { if (e.key === 'Enter') $('agBtn').click(); };
+function enterAgent(key) {
+  store.set('lastAgent', key);
+  show(AGENTS[key].screen);
+  $('hdrAgent').textContent = 'الوكيل: ' + AGENTS[key].name; $('hdrAgent').classList.remove('hidden');
+  $('btnSwitch').classList.remove('hidden');
+  AGENTS[key].open();
+}
+
+// ===================== وكيل «عزام» =====================
+const AG = 'agents/azzam';
+let S = { employees: [], directive: DEFAULT_DIRECTIVE }, AGT = {}, NOTICES = [], REFS = [], ASSETS = {};
+
+async function cmd(type, payload = {}) {
+  await addDoc(collection(db, AG, 'commands'), { type, payload, status: 'pending', createdAt: serverTimestamp(), from: 'panel' });
+  toast(AGT.online ? 'أُرسل الأمر إلى عزام…' : 'أُرسل الأمر — سيُنفَّذ عند اتصال جهاز العمل');
+}
+
+function openAzzam() {
+  document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
+    document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('on', x === b));
+    for (const t of ['tNotices', 'tRefs', 'tLog', 'tSet']) $(t).classList.toggle('hidden', t !== b.dataset.t);
+  });
+  unsubs.push(onSnapshot(doc(db, AG), s => { AGT = s.data() || {}; renderStatus(); }));
+  unsubs.push(onSnapshot(doc(db, AG, 'config', 'settings'), s => { S = { employees: [], directive: DEFAULT_DIRECTIVE, ...(s.data() || {}) }; renderPool(); renderNotices(); renderSettings(); renderRefs(); }));
+  unsubs.push(onSnapshot(query(collection(db, AG, 'notices'), where('state', '==', 'pending')), s => { NOTICES = s.docs.map(d => d.data()).sort((a, b) => String(a.rec?.CaseHearingDate).localeCompare(String(b.rec?.CaseHearingDate))); renderNotices(); }));
+  unsubs.push(onSnapshot(collection(db, AG, 'referrals'), s => { REFS = s.docs.map(d => d.data()).sort((a, b) => (tsDate(b.referredAt) || 0) - (tsDate(a.referredAt) || 0)); renderRefs(); }));
+  unsubs.push(onSnapshot(query(collection(db, AG, 'logs'), orderBy('at', 'desc'), limit(150)), s => renderLog(s.docs.map(d => d.data()))));
+  unsubs.push(onSnapshot(query(collection(db, AG, 'commands'), orderBy('createdAt', 'desc'), limit(5)), s => {
+    s.docChanges().forEach(ch => { const c = ch.doc.data(); if (ch.type === 'modified' && c.status === 'error') toast('❌ ' + (c.error || 'فشل الأمر'), 6000); if (ch.type === 'modified' && c.status === 'done' && c.type === 'auto_assign') toast(`✓ انتهت الإحالة الآلية: ${c.result?.done || 0} دعوى`); });
+  }));
+  unsubs.push(onSnapshot(doc(db, 'shared', 'assets'), s => { ASSETS = s.data() || {}; renderAssets(); }));
+  clearInterval(openAzzam._t); openAzzam._t = setInterval(renderStatus, 15000);
+
+  $('cmLogin').onclick = () => cmd('login', { focus: true });
+  $('cmScan').onclick = () => cmd('scan');
+  $('cmLive').onclick = () => cmd('live_view');
+  $('cmAuto').onclick = () => {
+    const pool = S.employees.filter(e => e.inRandom && e.platformId);
+    if (!pool.length) return toast('اختر موظفاً متاحاً على الأقل للإحالة العشوائية');
+    if (confirm(`إحالة جميع التبليغات الجديدة آلياً وبعدالة بين: ${pool.map(e => e.short).join('، ')}؟`)) cmd('auto_assign', { pool: pool.map(e => e.key) });
+  };
+}
+
+const STATE_TXT = { ready: 'جاهز', connecting: 'جارٍ الدخول', awaiting_nafath: 'بانتظار نفاذ', working: 'يعمل', live: 'العرض المباشر', error: 'خطأ', needs_id: 'يلزم رقم الهوية' };
+function renderStatus() {
+  const seen = tsDate(AGT.lastSeen);
+  const online = seen && (Date.now() - seen) < 90000;
+  AGT.online = online;
+  $('azDot').style.background = online ? '#22c55e' : '#9ca3af';
+  $('azOnline').textContent = online ? 'جهاز العمل متصل' : 'جهاز العمل غير متصل';
+  $('azState').textContent = (STATE_TXT[AGT.state] || '') + (AGT.statusText ? ' — ' + AGT.statusText : '');
+  $('azSeen').textContent = seen ? 'آخر اتصال: ' + fmtDT(seen) : '';
+  const naf = AGT.state === 'awaiting_nafath' && AGT.nafathNumber && (Date.now() - (tsDate(AGT.nafathAt) || 0)) < 180000;
+  $('azNafath').classList.toggle('hidden', !naf); $('azNafNum').textContent = AGT.nafathNumber || '';
+}
+
+function availEmps() { return (S.employees || []).filter(e => e.platformId); }
+function renderPool() {
+  const emps = S.employees || [];
+  $('poolBox').innerHTML = `<span class="muted">الإحالة العشوائية بين:</span>` + emps.map(e => `<label style="margin:0;display:inline-flex;gap:4px;align-items:center;color:var(--tx)"><input type="checkbox" style="width:auto" data-k="${e.key}" ${e.inRandom ? 'checked' : ''} ${e.platformId ? '' : 'disabled'}>${esc(e.short)}${e.platformId ? '' : ' <span class="muted">(غير مضاف بالمنصة)</span>'}</label>`).join('');
+  $('poolBox').querySelectorAll('input').forEach(cb => cb.onchange = async () => {
+    const employees = S.employees.map(e => e.key === cb.dataset.k ? { ...e, inRandom: cb.checked } : e);
+    await setDoc(doc(db, AG, 'config', 'settings'), { employees }, { merge: true }); toast('حُفظ اختيار الموظفين');
+  });
+}
+
+function empSelect(sel, prev) {
+  return `<option value="">— عشوائي عادل —</option>` + (S.employees || []).map(e => `<option value="${e.key}" ${e.key === sel ? 'selected' : ''} ${e.platformId ? '' : 'disabled'}>${esc(e.short)}${e.platformId ? '' : ' (غير مضاف)'}${e.key === prev ? ' ★ سبقت إحالتها إليه' : ''}</option>`).join('');
+}
+function classSelect(sel) { return Object.entries(CLASSES).map(([k, v]) => `<option value="${k}" ${k === String(sel) ? 'selected' : ''}>${v}</option>`).join(''); }
+
+function fairPick(prevKey) {
+  const avail = availEmps();
+  if (prevKey && avail.some(e => e.key === prevKey)) return prevKey;
+  const pool = avail.filter(e => e.inRandom).map(e => e.key);
+  const c = {}; REFS.forEach(r => { if (!r.followUp) c[r.empKey] = (c[r.empKey] || 0) + 1; });
+  if (!pool.length) return '';
+  const min = Math.min(...pool.map(k => c[k] || 0));
+  return pool.filter(k => (c[k] || 0) === min)[0];
+}
+
+function renderNotices() {
+  $('cntN').textContent = NOTICES.length ? `(${NOTICES.length})` : '';
+  if (!NOTICES.length) { $('tNotices').innerHTML = `<div class="card muted">لا توجد تبليغات بانتظار الإحالة. اضغط «فحص التبليغات» لتحديث القائمة.</div>`; return; }
+  $('tNotices').innerHTML = NOTICES.map(n => {
+    const sg = n.suggestion || {};
+    const suggested = fairPick(sg.prevEmpKey);
+    const sEmp = (S.employees || []).find(e => e.key === suggested);
+    return `<div class="notice" data-id="${n.caseId}">
+      <div class="tmpl"><button class="sm sec cp">نسخ</button><div style="padding-left:60px">${esc(n.shortText)}</div></div>
+      <div class="rep">الممثل المقترح: <b>${esc(sEmp ? sEmp.short : '—')}</b>${sg.prevEmpKey ? ' <span class="tag fu">دعوى سبقت إحالتها</span>' : ''} · الأهمية: <b>منخفضة</b> · التصنيف المقترح: <b>${esc(CLASSES[sg.classId] || '')}</b>${sg.circuit ? ` · الدائرة: <b>${sg.circuit}</b>` : ' · <span class="err">⚠️ لم يُحدَّد رقم الدائرة — استخدم العرض المباشر</span>'}</div>
+      <div class="muted" style="margin-top:4px">الموضوع: ${esc(String(n.rec?.CaseSubject || '').slice(0, 260))}</div>
+      <div class="row" style="margin-top:8px">
+        <select class="emp" style="max-width:220px">${empSelect(suggested, sg.prevEmpKey)}</select>
+        <select class="cls" style="max-width:200px">${classSelect(sg.classId)}</select>
+        <button class="sm go">إحالة</button>
+        <button class="sm am live">عرض مباشر على الجهاز</button>
+      </div></div>`;
+  }).join('');
+  $('tNotices').querySelectorAll('.notice').forEach(el => {
+    const n = NOTICES.find(x => x.caseId === el.dataset.id);
+    el.querySelector('.cp').onclick = () => navigator.clipboard.writeText(n.shortText).then(() => toast('نُسخ نص التبليغ المختصر'));
+    el.querySelector('.go').onclick = () => {
+      const k = el.querySelector('.emp').value || fairPick(n.suggestion?.prevEmpKey);
+      const e = S.employees.find(x => x.key === k);
+      if (!e) return toast('لا يوجد موظف متاح');
+      if (confirm(`إحالة الدعوى ${n.rec.CaseCode}/${n.rec.CaseYear} إلى ${e.short} بأهمية منخفضة؟`)) cmd('assign', { caseId: n.caseId, empKey: k, classId: el.querySelector('.cls').value });
+    };
+    el.querySelector('.live').onclick = () => cmd('live_view', { caseId: n.caseId, empKey: el.querySelector('.emp').value || null });
+  });
+}
+
+// ===== الإحالات السابقة =====
+['fQ', 'fEmp', 'fFrom', 'fTo'].forEach(id => $(id).addEventListener('input', renderRefs));
+function filteredRefs() {
+  const q = norm($('fQ').value), emp = $('fEmp').value, from = $('fFrom').value ? new Date($('fFrom').value) : null, to = $('fTo').value ? new Date($('fTo').value + 'T23:59:59') : null;
+  return REFS.filter(r => {
+    const d = tsDate(r.referredAt);
+    if (emp && r.empKey !== emp) return false;
+    if (from && d < from) return false;
+    if (to && d > to) return false;
+    if (q && !norm(`${r.rec?.CaseCode} ${r.rec?.PlaintiffName} ${r.rec?.DefendantName} ${r.caseNumber}`).includes(q)) return false;
+    return true;
+  });
+}
+function renderRefs() {
+  const emps = S.employees || [];
+  if ($('fEmp').options.length <= 1) $('fEmp').innerHTML = '<option value="">كل الموظفين</option>' + emps.map(e => `<option value="${e.key}">${esc(e.short)}</option>`).join('');
+  const now = new Date(), mStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const month = REFS.filter(r => tsDate(r.referredAt) >= mStart).length;
+  const auto = REFS.filter(r => r.mode === 'auto').length;
+  const upcoming = REFS.filter(r => { const h = r.rec?.CaseHearingDate ? new Date(String(r.rec.CaseHearingDate).slice(0, 10)) : null; return h && h >= new Date(now.toDateString()) && h - now < 7 * 864e5; }).length;
+  const per = {}; REFS.forEach(r => per[r.empKey] = (per[r.empKey] || 0) + 1);
+  const max = Math.max(1, ...Object.values(per));
+  $('stats').innerHTML = `
+    <div class="stat"><div class="muted">إجمالي الإحالات</div><div class="n">${REFS.length}</div></div>
+    <div class="stat"><div class="muted">هذا الشهر</div><div class="n">${month}</div></div>
+    <div class="stat"><div class="muted">آلية / يدوية</div><div class="n">${auto} / ${REFS.length - auto}</div></div>
+    <div class="stat"><div class="muted">جلسات خلال 7 أيام</div><div class="n">${upcoming}</div></div>
+    <div class="stat" style="grid-column:span 2"><div class="muted">التوزيع على الموظفين</div>${emps.map(e => `<div style="margin-top:6px;font-size:13px">${esc(e.short)} — ${per[e.key] || 0}<div class="bar"><i style="width:${((per[e.key] || 0) / max) * 100}%"></i></div></div>`).join('')}</div>`;
+  const rows = filteredRefs();
+  $('refTable').innerHTML = `<tr><th>الدعوى</th><th>المدعي / المدعى عليه</th><th>الجلسة</th><th>الممثل</th><th>الطريقة</th><th>تاريخ الإحالة</th><th></th></tr>` +
+    (rows.length ? rows.map(r => {
+      const e = emps.find(x => x.key === r.empKey) || {};
+      const modeTag = r.mode === 'auto' ? '<span class="tag auto">آلية</span>' : r.mode === 'live' ? '<span class="tag live">عرض مباشر</span>' : '<span class="tag">من اللوحة</span>';
+      return `<tr data-id="${r.caseId}"><td><b>${esc(r.rec?.CaseCode)}</b><div class="muted">لعام ${esc(r.rec?.CaseYear)}هـ</div></td>
+        <td>${esc(r.rec?.PlaintiffName)}<div class="muted">ضد ${esc(r.rec?.DefendantName)}</div></td>
+        <td>${esc(r.rec?.CaseHearingDateHijri)}هـ<div class="muted">${tDisp(r.rec?.CaseHearingTime)}</div></td>
+        <td>${esc(r.empShort)}${r.followUp ? ' <span class="tag fu">متابعة</span>' : ''}</td><td>${modeTag}</td><td>${fmtDT(r.referredAt)}</td>
+        <td><div class="row" style="gap:4px"><button class="sm sec cp">نسخ</button><button class="sm pr">التكليف PDF</button>${e.phone ? `<button class="sm sec wa">${r.whatsappSent ? 'واتساب ✓' : 'واتساب'}</button>` : ''}</div></td></tr>`;
+    }).join('') : `<tr><td colspan="7" class="muted">لا توجد إحالات مطابقة.</td></tr>`);
+  $('refTable').querySelectorAll('tr[data-id]').forEach(tr => {
+    const r = REFS.find(x => String(x.caseId) === tr.dataset.id);
+    tr.querySelector('.cp').onclick = () => navigator.clipboard.writeText(r.shortText).then(() => toast('نُسخ نص التبليغ المختصر'));
+    tr.querySelector('.pr').onclick = () => printLetter(r);
+    const wa = tr.querySelector('.wa'); if (wa) wa.onclick = () => sendWhatsApp(r);
+  });
+}
+
+function sendWhatsApp(r) {
+  const e = S.employees.find(x => x.key === r.empKey);
+  let ph = String(e.phone || '').replace(/\D/g, ''); if (ph.startsWith('05')) ph = '966' + ph.slice(1); else if (ph.startsWith('5')) ph = '966' + ph;
+  const txt = `السلام عليكم ${e.short}،\nأُحيلت إليكم الدعوى التالية في المنصة القانونية:\n${r.shortText}\nالأهمية: منخفضة\n\n${S.directive || DEFAULT_DIRECTIVE}`;
+  window.open(`https://wa.me/${ph}?text=${encodeURIComponent(txt)}`, '_blank');
+  setDoc(doc(db, AG, 'referrals', String(r.caseId)), { whatsappSent: true, whatsappAt: serverTimestamp() }, { merge: true });
+}
+
+// ===== خطاب التكليف (PDF عبر الطباعة) =====
+function letterHTML(r) {
+  const c = r.rec || {};
+  const subj = `تكليف بقضية رقم (${c.CaseCode}) لعام ${c.CaseYear}هـ المقامة من ${String(c.PlaintiffName || '').trim()}`;
+  const grid = pairs => { const f = pairs.filter(x => x[1]); let h = ''; for (let i = 0; i < f.length; i += 2) h += `<tr><th>${f[i][0]}</th><td>${esc(f[i][1])}</td>${f[i + 1] ? `<th>${f[i + 1][0]}</th><td>${esc(f[i + 1][1])}</td>` : '<td colspan="2"></td>'}</tr>`; return h; };
+  const wide = (k, v) => v ? `<tr><th>${k}</th><td colspan="3">${esc(v)}</td></tr>` : '';
+  const sig = S.useSignature && ASSETS.signature ? `<img src="${ASSETS.signature}" style="height:52px;display:block;margin:2px auto">` : '<div style="height:60px"></div>';
+  return `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>${esc(subj)}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    @page{size:A4;margin:11mm 15mm}
+    body{font-family:"AL-Mohanad","Sakkal Majalla","Traditional Arabic",Amiri,serif;font-size:13.5pt;color:#111;line-height:1.55;margin:0}
+    .hd{text-align:center}.hd img{height:74px}.dept{font-weight:700;font-size:15pt;margin-top:0}
+    .meta{display:flex;justify-content:space-between;font-size:12.5pt;margin-top:4px;border-bottom:1.5px solid #0f5c4a;padding-bottom:6px}
+    .subj{font-weight:700;margin:6px 0 2px}
+    .to{font-weight:700;margin-top:4px}
+    .box{border:1px solid #0f5c4a;border-radius:6px;padding:4px 10px;background:#f4f9f7;margin:6px 0}
+    table{width:100%;border-collapse:collapse;font-size:11.5pt;line-height:1.45;margin:5px 0}
+    th,td{border:1px solid #9fb8b0;padding:2px 7px;text-align:right;vertical-align:top}
+    th{background:#eaf2ef;width:17%;font-weight:700;white-space:nowrap}
+    .sig{width:280px;margin-right:auto;text-align:center;margin-top:0;font-weight:700;page-break-inside:avoid}
+    p{margin:4px 0;text-align:justify}
+  </style></head><body>
+  <div class="hd">${ASSETS.logo ? `<img src="${ASSETS.logo}">` : ''}<div class="dept">الإدارة القانونية</div></div>
+  <div class="meta"><span>التاريخ: ${hijriToday()}هـ الموافق ${gregToday()}م</span><span>الأهمية: منخفضة</span></div>
+  <div class="subj">الموضوع/ ${esc(subj)}</div>
+  <div class="to">المحترم/ ${esc(r.empFull || r.empShort)}</div>
+  <p>السلام عليكم ورحمة الله وبركاته، وبعد:</p>
+  <p>نفيدكم بتمثيلكم للبلدية في الدعوى رقم (${esc(c.CaseCode)}) لعام ${esc(c.CaseYear)}هـ المقامة من ${esc(String(c.PlaintiffName || '').trim())}، وبيان التبليغ كالتالي:</p>
+  <div class="box">${esc(r.shortText)}</div>
+  <table>${grid([
+    ['الرقم الموحد', c.CaseNumber], ['رقم الدعوى / سنتها', `${c.CaseCode} / ${c.CaseYear}هـ`],
+    ['المدعي', c.PlaintiffName], ['المدعى عليه', c.DefendantName],
+    ['المحكمة', c.Letter_CourtDescription], ['الدائرة', c.Letter_CircuitDescription],
+    ['تاريخ قيد الدعوى', c.FileOpenedDateStr], ['تاريخ التبليغ', c.CaseNotificationDate],
+    ['نوع خطاب الإبلاغ', c.Letter_InformLetterTypeDescription], ['سبب الخطاب', c.Letter_InformLetterRelevantDesc],
+    ['التصنيف', r.className], ['الأهمية', 'منخفضة']
+  ])}
+    ${wide('موضوع الدعوى', c.CaseSubject)}${wide('أسانيد الدعوى', c.Letter_CaseReferences)}
+  </table>
+  <p>${esc(S.directive || DEFAULT_DIRECTIVE)}</p>
+  <p style="text-align:center;margin-bottom:0">والسلام عليكم ورحمة الله وبركاته،،،</p>
+  <div class="sig">مدير الإدارة القانونية${sig}${MANAGER_NAME}</div>
+  <script>window.onload=()=>setTimeout(()=>window.print(),600)<\/script></body></html>`;
+}
+function printLetter(r) {
+  const w = window.open('', '_blank');
+  if (!w) return toast('اسمح بالنوافذ المنبثقة لطباعة الخطاب');
+  w.document.write(letterHTML(r)); w.document.close();
+}
+$('prList').onclick = () => {
+  const rows = filteredRefs();
+  const w = window.open('', '_blank'); if (!w) return toast('اسمح بالنوافذ المنبثقة');
+  w.document.write(`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>الإحالات السابقة</title><style>body{font-family:Tajawal,Tahoma,sans-serif;font-size:12px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #999;padding:4px;text-align:right;vertical-align:top}th{background:#eaf2ef}h2{color:#0f5c4a}</style></head><body>
+  <h2>الإحالات السابقة — الإدارة القانونية (${rows.length})</h2><div>تاريخ الطباعة: ${hijriToday()}هـ</div><br>
+  <table><tr><th>م</th><th>الدعوى</th><th>المدعي</th><th>المدعى عليه</th><th>المحكمة / الدائرة</th><th>موعد الجلسة</th><th>الموضوع</th><th>التصنيف</th><th>الممثل</th><th>تاريخ الإحالة</th></tr>
+  ${rows.map((r, i) => `<tr><td>${i + 1}</td><td>${esc(r.rec?.CaseCode)}/${esc(r.rec?.CaseYear)}</td><td>${esc(r.rec?.PlaintiffName)}</td><td>${esc(r.rec?.DefendantName)}</td><td>${esc(r.rec?.Letter_CourtDescription)} - ${esc(r.rec?.Letter_CircuitDescription)}</td><td>${esc(r.rec?.CaseHearingDateHijri)}هـ ${tDisp(r.rec?.CaseHearingTime)}</td><td>${esc(String(r.rec?.CaseSubject || '').slice(0, 160))}</td><td>${esc(r.className)}</td><td>${esc(r.empShort)}</td><td>${fmtDT(r.referredAt)}</td></tr>`).join('')}
+  </table><script>window.onload=()=>window.print()<\/script></body></html>`);
+  w.document.close();
+};
+
+// ===== السجل =====
+function renderLog(list) {
+  $('logList').innerHTML = list.length ? list.map(l => `<div class="logline">${l.level === 'error' ? '❌' : '•'} <span class="muted">${fmtDT(l.at)}</span> — ${esc(l.text)}</div>`).join('') : '<div class="muted">لا يوجد نشاط بعد.</div>';
+}
+
+// ===== الإعدادات =====
+function renderSettings() {
+  const emps = S.employees || [];
+  $('empTable').innerHTML = `<tr><th>الاسم المختصر</th><th>الاسم في المنصة</th><th>الحالة</th><th>جوال واتساب (اختياري)</th><th>ضمن العشوائي</th></tr>` +
+    emps.map(e => `<tr data-k="${e.key}"><td>${esc(e.short)}</td><td>${esc(e.fullName || '—')}</td><td>${e.platformId ? '<span class="tag">متاح</span>' : '<span class="tag fu">غير مضاف بالمنصة</span>'}</td>
+      <td><input class="ph" value="${esc(e.phone || '')}" placeholder="05xxxxxxxx" style="max-width:160px"></td>
+      <td><input type="checkbox" class="rnd" style="width:auto" ${e.inRandom ? 'checked' : ''}></td></tr>`).join('');
+  if (document.activeElement !== $('dirTxt')) $('dirTxt').value = S.directive || DEFAULT_DIRECTIVE;
+  $('useSig').checked = !!S.useSignature;
+}
+$('saveEmp').onclick = async () => {
+  const employees = S.employees.map(e => { const tr = $('empTable').querySelector(`tr[data-k="${e.key}"]`); return { ...e, phone: tr.querySelector('.ph').value.trim(), inRandom: tr.querySelector('.rnd').checked }; });
+  await setDoc(doc(db, AG, 'config', 'settings'), { employees }, { merge: true }); toast('حُفظت بيانات الموظفين');
+};
+$('saveDir').onclick = async () => { await setDoc(doc(db, AG, 'config', 'settings'), { directive: $('dirTxt').value.trim() }, { merge: true }); toast('حُفظ نص التوجيه'); };
+$('useSig').onchange = async () => { await setDoc(doc(db, AG, 'config', 'settings'), { useSignature: $('useSig').checked }, { merge: true }); };
+
+function renderAssets() {
+  for (const [k, img] of [['logo', 'pvLogo'], ['signature', 'pvSig']]) { $(img).classList.toggle('hidden', !ASSETS[k]); if (ASSETS[k]) $(img).src = ASSETS[k]; }
+}
+function shrink(file, maxW, type) {
+  return new Promise((res, rej) => {
+    const img = new Image(); img.onload = () => {
+      const s = Math.min(1, maxW / img.width); const c = document.createElement('canvas');
+      c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); res(c.toDataURL(type, 0.9));
+    }; img.onerror = rej; img.src = URL.createObjectURL(file);
+  });
+}
+$('upLogo').onchange = async e => { const f = e.target.files[0]; if (!f) return; await setDoc(doc(db, 'shared', 'assets'), { logo: await shrink(f, 600, 'image/jpeg') }, { merge: true }); toast('حُفظ الشعار'); };
+$('upSig').onchange = async e => { const f = e.target.files[0]; if (!f) return; await setDoc(doc(db, 'shared', 'assets'), { signature: await shrink(f, 600, 'image/png') }, { merge: true }); toast('حُفظ التوقيع'); };
+</script>
+</body>
+</html>
